@@ -19,7 +19,7 @@
         "gz"
     ],
     "author": "kryvashek",
-    "license": "BSD 3-Clause",
+    "license": "BSD-3-Clause",
     "bugs": {
         "url": "https://github.com/kryvashek/silly-unpack/issues"
     },
