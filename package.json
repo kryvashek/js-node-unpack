@@ -25,6 +25,7 @@
     },
     "homepage": "https://github.com/kryvashek/silly-unpack#readme",
     "dependencies": {
-        "silly-barrier": "^0.3.3"
+        "silly-barrier": "^0.3.3",
+        "tar-stream": "^1.5.2"
     }
 }
