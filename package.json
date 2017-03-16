@@ -23,5 +23,8 @@
     "bugs": {
         "url": "https://github.com/kryvashek/silly-unpack/issues"
     },
-    "homepage": "https://github.com/kryvashek/silly-unpack#readme"
+    "homepage": "https://github.com/kryvashek/silly-unpack#readme",
+    "dependencies": {
+        "silly-barrier": "^0.3.3"
+    }
 }
