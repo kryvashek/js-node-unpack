@@ -4,7 +4,7 @@
     "description": "Simple Node.JS routine to massively decompress to memory files archived as Gzip and, optionally, Tar.",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "cd test && nodejs test.js && cd .."
     },
     "repository": {
         "type": "git",
