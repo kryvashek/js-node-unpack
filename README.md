@@ -1,11 +1,11 @@
 # silly-unpack #
-Simple Node.JS routine to massively decompress to memory files archived as Gzip and, optionally, Tar.
+Simple Node.JS routine to massively decompress to memory files archived as Gzip and/or Tar.
 
 ## Version ##
-Current module version is 0.2.1.
+Current module version is 0.3.0.
 
 ## License ##
-**silly-unpack** is licensed under BSD 3-Clause license. See [license](./LICENSE) for details.
+**silly-unpack** is licensed under BSD 3-clause "Revised" License. See [license](./LICENSE) for details.
 
 ## Usage ##
 ### Install ###
@@ -18,10 +18,28 @@ Current version of **silly-unpack** depends on the next modules:
 * **tar-stream**.
 
 ### Test ###
-To test module just run command `cd test && nodejs test.js && cd ..` from the folder where `index.js` is placed. Output should appear like that one:
+To test module just run command `nodejs ./test.js` from the folder where module is placed. Output should appear like that one (may be unformatted):
 
-	{"2017-03-09.txt.gz":"Some text in gzipped file `temptemp.txt`.","2017-03-10.txt.gz":"Some text in gzipped file `temp.txt`."}
-	{"2017-03-09.tar.gz":{"temptemp2.txt":"Some text in gzipped and then tarred file `temptemp2.txt`.","temptemp1.txt":"Some text in gzipped and then tarred file `temptemp1.txt`."},"2017-03-10.tar.gz":{"temp2.txt":"Some text in gzipped and then tarred file `temp2.txt`.","temp1.txt":"Some text in gzipped and then tarred file `temp1.txt`."}}
+	{
+		"tars/E.tar":{
+			"tartemp2.txt":"Some text in tarred file `tartemp2.txt`.",
+			"tartemp1.txt":"Some text in tarred file `tartemp1.txt`."
+		},
+		"tars/F.tar":{
+			"tartemp4.txt":"Some text in tarred file `tartemp4.txt`.",
+			"tartemp3.txt":"Some text in tarred file `tartemp3.txt`."
+		},
+		"gzips/A.txt.gz":"Some text in gzipped file `temptemp.txt`.",
+		"targzips/C.tar.gz":{
+			"targztemp2.txt":"Some text in tarred and then gzipped file `targztemp2.txt`.",
+			"targztemp1.txt":"Some text in tarred and then gzipped file `targztemp1.txt`."
+		},
+		"gzips/B.txt.gz":"Some text in gzipped file `temp.txt`.",
+		"targzips/D.tar.gz":{
+			"targztemp4.txt":"Some text in tarred and then gzipped file `targztemp4.txt`.",
+			"targztemp3.txt":"Some text in tarred and then gzipped file `targztemp3.txt`."
+		}
+	}
 
 ### Run ###
 
@@ -29,18 +47,19 @@ To use **silly-unpack** one should first specify an array of filenames wanted to
 
 Example of names array is next:
 
-	var names = ['2017-03-09.txt.gz', '2017-03-10.txt.gz'];
+	var names = ['gzips/A.txt.gz', 'gzips/B.txt.gz', 'targzips/C.tar.gz', 'tars/E.tar'];
 
 Then one need to call function **unpack** from the imported module and pass next parameters:
 
-* **type** - type of unpacking routine, currently only *ungzip* or *untar*,
 * **folder** - place in the filesystem with all the extracting files (they will be accessed by the path `<folder>/<name>`), but can be empty string,
 * **names** - array of files to extract,
-* **callbackfn** - function to call after finishing extracting of all specified files, should process only one parameter, *data* (see description below).
+* **callbackfn** - function to call after finishing extracting of all specified files, should process two parameters:
+	- *errors* (array of errors occured),
+	- *data* (see description below).
 
 Example of call is next:
 
-	require('silly-unpack').unpack('ungzip', 'gzips/', names, print);
+	require('silly-unpack').unpack('gzips/', names, print);
 
 The full working example of module usage one can find in [test.js](./test/test.js).
 
@@ -52,7 +71,7 @@ The full working example of module usage one can find in [test.js](./test/test.j
 		"<name-of-the-archive-2-without-folder>":"File 2 content"
 	}
 
-For tarred and gzipped files slightly another structure is provided:
+For tarred (and optionally gzipped) files slightly another structure is provided:
 
 	{
 		"<name-of-the-archive-1-without-folder>": {
