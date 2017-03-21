@@ -2,6 +2,10 @@ module.exports = {
     unpack: unpack
 };
 
+var FS = require('fs'),
+    ZL = require('zlib'),
+    TS = require('tar-stream');
+
 /**
  * @description Decompress several Gzip/Tar archives and saves got data in the memory
  * @requires Requires tar-stream module and correct extensions of unpacking files.
@@ -17,35 +21,31 @@ function unpack(folder, names, callbackfn) {
         unpackers = new Unpackers(),
         errors,
         routines = names.map(item => {
-            var type = unpackers.properType(item);
+            var type = unpackers.properType(item),
+                mistake = { item: item };
 
-            if (unpackers.hasOwnProperty(type))
+            if (!unpackers.hasOwnProperty(type))
+                mistake.reason = 'Item ignored: unpacker unspecified for such file type';
+            else if (!FS.existsSync)
+                mistake.reason = 'Item ignored: no such file';
+
+            if (mistake.reason) {
+                if (errors)
+                    errors.push(mistake);
+                else
+                    errors = [mistake];
+            } else
                 return {
                     func: unpackers[type],
                     args: [folder + item, data => { extracted[item] = data; }],
                     cbkey: 1
                 };
-            else {
-                var mistake = {
-                    item: item,
-                    reason: 'Item ignored: unpacker unspecified for such file type'
-                };
-
-                if (errors)
-                    errors.push(mistake);
-                else
-                    errors = [mistake];
-            }
         });
 
     require('silly-barrier').barrier(routines, { func: callbackfn, args: [errors, extracted] });
 
     return true;
 }
-
-var FS = require('fs'),
-    ZL = require('zlib'),
-    TS = require('tar-stream');
 
 // creates stream from raw stream compressed with gzip
 function ungzipStream(rawstream) {
@@ -122,35 +122,22 @@ function Unpackers() {
 
     // reads data from ungzipped stream and saves it in the given location
     this.ungzip = (path, callbackfn) => {
-        if (!FS.existsSync(path))
-            return false;
-
         var input = FS.createReadStream(path);
 
         processUngzipStream(ungzipStream(input), callbackfn);
-
-        return true;
     };
 
     // reads data from tar archive and saves different file contents from within
     this.untar = (path, callbackfn) => {
-        if (!FS.existsSync(path))
-            return false;
-
         var input = FS.createReadStream(path);
 
         processUntarStream(untarStream(input), callbackfn);
-        return true;
     };
 
     // reads data from ungzipped tar archive and saves different file contents from within
     this.untargzip = (path, callbackfn) => {
-        if (!FS.existsSync(path))
-            return false;
-
         var input = FS.createReadStream(path);
 
         processUntarStream(untarStream(ungzipStream(input)), callbackfn);
-        return true;
     };
 }
