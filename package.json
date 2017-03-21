@@ -1,6 +1,6 @@
 {
     "name": "silly-unpack",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "Simple Node.JS routine to massively decompress to memory files archived as Gzip and/or Tar.",
     "main": "index.js",
     "scripts": {
@@ -25,7 +25,7 @@
     },
     "homepage": "https://github.com/kryvashek/silly-unpack#readme",
     "dependencies": {
-        "silly-barrier": "^0.4.1",
+        "silly-barrier": "^0.4.2",
         "tar-stream": "^1.5.2"
     }
 }
