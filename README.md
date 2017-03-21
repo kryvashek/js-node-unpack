@@ -2,7 +2,7 @@
 Simple Node.JS routine to massively decompress to memory files archived as Gzip and/or Tar.
 
 ## Version ##
-Current module version is 0.3.1.
+Current module version is 0.3.2.
 
 ## License ##
 **silly-unpack** is licensed under BSD 3-clause "Revised" License. See [license](./LICENSE) for details.
