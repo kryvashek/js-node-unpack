@@ -26,7 +26,7 @@ function unpack(folder, names, callbackfn) {
 
             if (!unpackers.hasOwnProperty(type))
                 mistake.reason = 'Item ignored: unpacker unspecified for such file type';
-            else if (!FS.existsSync)
+            else if (!FS.existsSync(item))
                 mistake.reason = 'Item ignored: no such file';
 
             if (mistake.reason) {
