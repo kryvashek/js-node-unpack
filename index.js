@@ -9,24 +9,28 @@ var FS = require('fs'),
 /**
  * @description Decompress several Gzip/Tar archives and saves got data in the memory
  * @requires Requires tar-stream module and correct extensions of unpacking files.
- * @param folder Path prefix for every unpacking file (can easily be empty).
  * @param names Array of filnames to decompress.
  * @param callbackfn Function to execute after decompressing all the given entries, should process arguments:
  *     errors (array of errors occured while processing),
  *     extracted (data extracted from all the entries).
+ * @param folder Optional. Path prefix for every unpacking file. Assumed as empty string if undefined.
  * @returns Returns nothing.
  **/
-function unpack(folder, names, callbackfn) {
+function unpack(names, callbackfn, folder) {
+    if( !folder )
+        folder = '';
+
     var extracted = {},
         unpackers = new Unpackers(),
         errors,
         routines = names.map(item => {
             var type = unpackers.properType(item),
-                mistake = { item: item };
+                fullPath = folder + item,
+                mistake = { item: fullPath };
 
             if (!unpackers.hasOwnProperty(type))
                 mistake.reason = 'Item ignored: unpacker unspecified for such file type';
-            else if (!FS.existsSync(item))
+            else if (!FS.existsSync(fullPath))
                 mistake.reason = 'Item ignored: no such file';
 
             if (mistake.reason) {
@@ -37,7 +41,7 @@ function unpack(folder, names, callbackfn) {
             } else
                 return {
                     func: unpackers[type],
-                    args: [folder + item, data => { extracted[item] = data; }],
+                    args: [fullPath, data => { extracted[item] = data; }],
                     cbkey: 1
                 };
         });
