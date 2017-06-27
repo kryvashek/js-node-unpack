@@ -1,11 +1,8 @@
 print = (errors, data) => {
     if (errors)
-        console.log('Errors occured while extracting!', errors);
+        console.log('Errors occured while extracting!\n', errors);
 
-    if ('string' !== typeof data)
-        data = JSON.stringify(data);
-
-    console.log(data);
+    console.log('Extracted data is\n', data);
 };
 
-require('./index.js').unpack('test/', ['gzips/A.txt.gz', 'gzips/B.txt.gz', 'targzips/C.tar.gz', 'targzips/D.tar.gz', 'tars/E.tar', 'tars/F.tar'], print);
+require('./index.js').unpack(['gzips/A.txt.gz', 'gzips/B.txt.gz', 'targzips/C.tar.gz', 'targzips/D.tar.gz', 'tars/E.tar', 'tars/F.tar'], print, 'test/');
